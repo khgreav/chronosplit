@@ -1,0 +1,143 @@
+package menus
+
+import (
+	"chronosplit/common"
+	"chronosplit/repos"
+	"chronosplit/services"
+	"database/sql"
+	"fmt"
+	"strings"
+
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
+	"charm.land/lipgloss/v2/table"
+)
+
+var projectOptions = []common.MenuItem{
+	{ID: "list", Label: "List projects"},
+	{ID: "create", Label: "Create project"},
+	{ID: "delete", Label: "Delete project"},
+	{ID: "back", Label: "Back to main menu"},
+	{ID: "exit", Label: "Exit"},
+}
+
+var projectResultOptions = []common.MenuItem{
+	{ID: "projects", Label: "Back to projects"},
+}
+
+type ProjectMenu struct {
+	common.BaseMenu
+}
+
+func NewProjectMenu(db *sql.DB) *ProjectMenu {
+	return &ProjectMenu{
+		BaseMenu: common.BaseMenu{
+			Header:  "Projects menu\n\n",
+			Options: projectOptions,
+			Index:   0,
+			Db:      db,
+		},
+	}
+}
+
+func (m ProjectMenu) Init() tea.Cmd {
+	return nil
+}
+
+func (m ProjectMenu) View() tea.View {
+	var v tea.View
+
+	var sb strings.Builder
+	sb.WriteString(m.Header)
+
+	for i, option := range m.Options {
+		cursor := m.GetCursor(i)
+		if m.Index == i {
+			line := fmt.Sprintf("%s %s", cursor, option.Label)
+			fmt.Fprintf(&sb, "%s\n", common.SelectedStyle.Render(line))
+		} else {
+			fmt.Fprintf(&sb, "%s %s\n", cursor, option.Label)
+		}
+	}
+
+	v.SetContent(sb.String())
+	return v
+}
+
+func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyPressMsg:
+		switch msg.String() {
+		case "up":
+			if m.Index == 0 {
+				m.Index = len(m.Options) - 1
+			} else {
+				m.Index--
+			}
+		case "down":
+			if m.Index == len(m.Options)-1 {
+				m.Index = 0
+			} else {
+				m.Index++
+			}
+		case "enter":
+			switch m.Options[m.Index].ID {
+			case "list":
+				repo := repos.NewProjectRepo(m.Db)
+				service := services.NewProjectService(repo)
+				projects, err := service.ListProjects()
+				resultMenu := NewResultMenu(m.Db, projectResultOptions, true, "")
+				if err != nil {
+					resultMenu.Success = false
+					resultMenu.Message = err.Error()
+				} else {
+					t := table.New().
+						Border(lipgloss.ASCIIBorder()).
+						Headers("ID", "Name")
+
+					for _, p := range projects {
+						t.Row(
+							fmt.Sprintf("%d", p.ID),
+							p.Name,
+						)
+					}
+					t.StyleFunc(func(row, col int) lipgloss.Style {
+						if row == table.HeaderRow {
+							return common.HeaderStyle
+						}
+						return lipgloss.NewStyle()
+					})
+					resultMenu.Message = t.String()
+				}
+				return resultMenu, resultMenu.Init()
+			case "create":
+				projectCreateMenu := NewProjectCreateMenu(m.Db)
+				return projectCreateMenu, projectCreateMenu.Init()
+			case "delete":
+				repo := repos.NewProjectRepo(m.Db)
+				service := services.NewProjectService(repo)
+				projects, err := service.ListProjects()
+				if err != nil {
+					resultMenu := NewResultMenu(
+						m.Db,
+						projectResultOptions,
+						false,
+						err.Error(),
+					)
+					return resultMenu, resultMenu.Init()
+				}
+				projectDeleteMenu := NewProjectDeleteMenu(
+					m.Db,
+					projects,
+				)
+				return projectDeleteMenu, projectDeleteMenu.Init()
+			case "back":
+				mainMenu := NewMainMenu(m.Db)
+				return mainMenu, mainMenu.Init()
+			case "exit":
+				return m, tea.Quit
+			}
+		}
+	}
+	return m, nil
+}
