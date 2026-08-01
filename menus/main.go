@@ -131,6 +131,9 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "projects":
 				projectMenu := NewProjectMenu(m.Db)
 				return projectMenu, projectMenu.Init()
+			case "subjects":
+				subjectMenu := NewSubjectMenu(m.Db)
+				return subjectMenu, subjectMenu.Init()
 			case "exit":
 				return m, tea.Quit
 			}

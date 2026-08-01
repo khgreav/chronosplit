@@ -1,10 +1,11 @@
 package menus
 
 import (
-	"github.com/khgreav/chronosplit/common"
 	"database/sql"
 	"fmt"
 	"strings"
+
+	"github.com/khgreav/chronosplit/common"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -81,6 +82,9 @@ func (m *ResultMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "projects":
 				projectMenu := NewProjectMenu(m.Db)
 				return projectMenu, projectMenu.Init()
+			case "subjects":
+				subjectMenu := NewSubjectMenu(m.Db)
+				return subjectMenu, subjectMenu.Init()
 			case "back":
 				mainMenu := NewMainMenu(m.Db)
 				return mainMenu, mainMenu.Init()
