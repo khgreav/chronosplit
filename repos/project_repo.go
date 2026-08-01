@@ -1,7 +1,7 @@
 package repos
 
 import (
-	"chronosplit/models"
+	"github.com/khgreav/chronosplit/models"
 	"database/sql"
 	"fmt"
 )

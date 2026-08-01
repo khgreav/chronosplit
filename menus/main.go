@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"chronosplit/common"
-	"chronosplit/repos"
+	"github.com/khgreav/chronosplit/common"
+	"github.com/khgreav/chronosplit/repos"
 
 	tea "charm.land/bubbletea/v2"
 )

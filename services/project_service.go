@@ -1,8 +1,8 @@
 package services
 
 import (
-	"chronosplit/models"
-	"chronosplit/repos"
+	"github.com/khgreav/chronosplit/models"
+	"github.com/khgreav/chronosplit/repos"
 )
 
 type ProjectService struct {

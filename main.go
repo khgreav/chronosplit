@@ -1,7 +1,7 @@
 package main
 
 import (
-	"chronosplit/menus"
+	"github.com/khgreav/chronosplit/menus"
 	"database/sql"
 	"fmt"
 	"os"

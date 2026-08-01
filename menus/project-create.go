@@ -1,9 +1,9 @@
 package menus
 
 import (
-	"chronosplit/common"
-	"chronosplit/repos"
-	"chronosplit/services"
+	"github.com/khgreav/chronosplit/common"
+	"github.com/khgreav/chronosplit/repos"
+	"github.com/khgreav/chronosplit/services"
 	"database/sql"
 	"fmt"
 	"strings"

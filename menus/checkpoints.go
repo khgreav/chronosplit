@@ -1,6 +1,6 @@
 package menus
 
-import "chronosplit/common"
+import "github.com/khgreav/chronosplit/common"
 
 var startMenuOptions = []common.MenuItem{
 	{ID: "category", Label: "Select project"},
