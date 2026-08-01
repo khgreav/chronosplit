@@ -1,12 +1,13 @@
 package menus
 
 import (
-	"github.com/khgreav/chronosplit/common"
-	"github.com/khgreav/chronosplit/repos"
-	"github.com/khgreav/chronosplit/services"
 	"database/sql"
 	"fmt"
 	"strings"
+
+	"github.com/khgreav/chronosplit/common"
+	"github.com/khgreav/chronosplit/repos"
+	"github.com/khgreav/chronosplit/services"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
@@ -83,8 +84,7 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.Options[m.Index].ID {
 			case "list":
-				repo := repos.NewSubjectRepo(m.Db)
-				service := services.NewSubjectService(repo)
+				service := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
 				subjects, err := service.ListSubjects()
 				resultMenu := NewResultMenu(m.Db, subjectResultOptions, true, "")
 				if err != nil {
@@ -114,8 +114,7 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				subjectCreateMenu := NewSubjectCreateMenu(m.Db)
 				return subjectCreateMenu, subjectCreateMenu.Init()
 			case "delete":
-				repo := repos.NewSubjectRepo(m.Db)
-				service := services.NewSubjectService(repo)
+				service := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
 				subjects, err := service.ListSubjects()
 				if err != nil {
 					resultMenu := NewResultMenu(

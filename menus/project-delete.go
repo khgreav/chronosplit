@@ -1,13 +1,14 @@
 package menus
 
 import (
+	"database/sql"
+	"fmt"
+	"strings"
+
 	"github.com/khgreav/chronosplit/common"
 	"github.com/khgreav/chronosplit/models"
 	"github.com/khgreav/chronosplit/repos"
 	"github.com/khgreav/chronosplit/services"
-	"database/sql"
-	"fmt"
-	"strings"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -64,7 +65,7 @@ func (m *ProjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				break
 			}
 			if m.Index == 0 {
-				m.Index = len(m.Options) - 1
+				m.Index = len(m.Projects) - 1
 			} else {
 				m.Index--
 			}
@@ -72,15 +73,14 @@ func (m *ProjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if len(m.Projects) == 1 {
 				break
 			}
-			if m.Index == len(m.Options)-1 {
+			if m.Index == len(m.Projects)-1 {
 				m.Index = 0
 			} else {
 				m.Index++
 			}
 		case "enter":
 			id := m.Projects[m.Index].ID
-			repo := repos.NewProjectRepo(m.Db)
-			service := services.NewProjectService(repo)
+			service := services.NewProjectService(repos.NewProjectRepo(m.Db))
 			err := service.DeleteProject(id)
 			resultMenu := NewResultMenu(
 				m.Db,

@@ -1,12 +1,13 @@
 package menus
 
 import (
-	"github.com/khgreav/chronosplit/common"
-	"github.com/khgreav/chronosplit/repos"
-	"github.com/khgreav/chronosplit/services"
 	"database/sql"
 	"fmt"
 	"strings"
+
+	"github.com/khgreav/chronosplit/common"
+	"github.com/khgreav/chronosplit/repos"
+	"github.com/khgreav/chronosplit/services"
 
 	"charm.land/bubbles/v2/textinput"
 	tea "charm.land/bubbletea/v2"
@@ -41,12 +42,15 @@ func (m *ProjectCreateMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
+	sb.WriteString(m.Header)
 
 	if m.Retry {
-		sb.WriteString("Empty project name is not allowed\n\n")
+		fmt.Fprintf(&sb, "%s\n", common.ErrorStyle.Render("Empty project name is not allowed\n"))
 	}
 	sb.WriteString("Please enter project name:\n")
 	sb.WriteString(m.Input.View())
+
+	sb.WriteString("\n\n[Ctrl-C] Back to main menu")
 
 	v.SetContent(sb.String())
 	return v
@@ -66,8 +70,7 @@ func (m *ProjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// success
 			m.Input.Blur()
 
-			repo := repos.NewProjectRepo(m.Db)
-			service := services.NewProjectService(repo)
+			service := services.NewProjectService(repos.NewProjectRepo(m.Db))
 
 			project, err := service.CreateProject(name)
 
@@ -88,6 +91,9 @@ func (m *ProjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 			}
 			return resultMenu, resultMenu.Init()
+		case "ctrl+c":
+			mainMenu := NewMainMenu(m.Db)
+			return mainMenu, mainMenu.Init()
 		}
 	}
 	var cmd tea.Cmd

@@ -1,12 +1,13 @@
 package menus
 
 import (
-	"github.com/khgreav/chronosplit/common"
-	"github.com/khgreav/chronosplit/repos"
-	"github.com/khgreav/chronosplit/services"
 	"database/sql"
 	"fmt"
 	"strings"
+
+	"github.com/khgreav/chronosplit/common"
+	"github.com/khgreav/chronosplit/repos"
+	"github.com/khgreav/chronosplit/services"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
@@ -83,8 +84,7 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.Options[m.Index].ID {
 			case "list":
-				repo := repos.NewProjectRepo(m.Db)
-				service := services.NewProjectService(repo)
+				service := services.NewProjectService(repos.NewProjectRepo(m.Db))
 				projects, err := service.ListProjects()
 				resultMenu := NewResultMenu(m.Db, projectResultOptions, true, "")
 				if err != nil {
@@ -114,8 +114,7 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				projectCreateMenu := NewProjectCreateMenu(m.Db)
 				return projectCreateMenu, projectCreateMenu.Init()
 			case "delete":
-				repo := repos.NewProjectRepo(m.Db)
-				service := services.NewProjectService(repo)
+				service := services.NewProjectService(repos.NewProjectRepo(m.Db))
 				projects, err := service.ListProjects()
 				if err != nil {
 					resultMenu := NewResultMenu(

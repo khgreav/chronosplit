@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/khgreav/chronosplit/common"
 	"github.com/khgreav/chronosplit/repos"
+	"github.com/khgreav/chronosplit/services"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -16,7 +16,7 @@ var mainMenuOptions = []common.MenuItem{
 	{ID: "show", Label: "Show work blocks"},
 	{ID: "start", Label: "Start work block"},
 	{ID: "stop", Label: "Stop work block"},
-	{ID: "checkpoint", Label: "Make a checkpoint"},
+	{ID: "checkpoint", Label: "Create a checkpoint"},
 	{ID: "projects", Label: "Manage projects"},
 	{ID: "subjects", Label: "Manage subjects"},
 	{ID: "exit", Label: "Exit"},
@@ -29,7 +29,7 @@ type MainMenu struct {
 func NewMainMenu(db *sql.DB) *MainMenu {
 	return &MainMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Make your life slightly less hellish with tailored time tracking solution.\n\n",
+			Header:  "Make your life slightly less hellish with a tailored time tracking solution.\n\n",
 			Options: mainMenuOptions,
 			Index:   0,
 			Db:      db,
@@ -45,6 +45,13 @@ func (m MainMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
+	sb.WriteString(" ██████╗██╗  ██╗██████╗  ██████╗ ███╗  ██╗ ██████╗ ███████╗██████╗ ██╗     ██╗████████╗\n")
+	sb.WriteString("██╔════╝██║  ██║██╔══██╗██╔═══██╗████╗ ██║██╔═══██╗██╔════╝██╔══██╗██║     ██║╚══██╔══╝\n")
+	sb.WriteString("██║     ███████║██████╔╝██║   ██║██║██╗██║██║   ██║███████╗██████╔╝██║     ██║   ██║\n")
+	sb.WriteString("██║     ██╔══██║██╔══██╗██║   ██║██║╚████║██║   ██║╚════██║██╔═══╝ ██║     ██║   ██║\n")
+	sb.WriteString("╚██████╗██║  ██║██║  ██║╚██████╔╝██║ ╚███║╚██████╔╝███████║██║     ███████║██║   ██║\n")
+	sb.WriteString(" ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚══╝ ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝   ╚═╝\n")
+	sb.WriteString("\n")
 	sb.WriteString(m.Header)
 
 	for i, option := range m.Options {
@@ -80,27 +87,58 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.Options[m.Index].ID {
 			case "start":
-				repo := repos.NewBlockRepo(m.Db)
-				id, err := repo.StartBlock()
-				if err != nil {
-					resultMenu := NewResultMenu(
-						m.Db,
-						[]common.MenuItem{},
-						false,
-						err.Error(),
-					)
-					return resultMenu, resultMenu.Init()
-				}
+				service := services.NewBlockService(
+					repos.NewBlockRepo(m.Db),
+				)
+				exists, err := service.ActiveBlockExists()
 				resultMenu := NewResultMenu(
 					m.Db,
 					[]common.MenuItem{},
 					true,
-					fmt.Sprintf("New work block with ID %d started.", *id),
+					"",
 				)
+				if err != nil {
+					resultMenu.Success = false
+					resultMenu.Message = err.Error()
+					return resultMenu, resultMenu.Init()
+				}
+				if exists {
+					resultMenu.Success = false
+					resultMenu.Message = "An active work block already exists."
+					return resultMenu, resultMenu.Init()
+				}
+				id, err := service.StartBlock()
+				if err != nil {
+					resultMenu.Success = false
+					resultMenu.Message = err.Error()
+					return resultMenu, resultMenu.Init()
+				}
+				resultMenu.Message = fmt.Sprintf("New work block with ID %d started.", *id)
 				return resultMenu, resultMenu.Init()
-			case "stop":
-				blockRepo := repos.NewBlockRepo(m.Db)
-				id, err := blockRepo.GetActiveBlockId()
+			case "stop", "checkpoint":
+				stopBlock := false
+				if m.Options[m.Index].ID == "stop" {
+					stopBlock = true
+				}
+				service := services.NewBlockService(
+					repos.NewBlockRepo(m.Db),
+				)
+				exists, err := service.ActiveBlockExists()
+				if !exists {
+					resultMenu := NewResultMenu(
+						m.Db,
+						[]common.MenuItem{},
+						false,
+						"",
+					)
+					if err != nil {
+						resultMenu.Message = err.Error()
+					} else {
+						resultMenu.Message = "There is no active work block."
+					}
+					return resultMenu, resultMenu.Init()
+				}
+				block, err := service.GetActiveBlock()
 				if err != nil {
 					resultMenu := NewResultMenu(
 						m.Db,
@@ -110,24 +148,18 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					)
 					return resultMenu, resultMenu.Init()
 				}
-				now := time.Now()
-				err = blockRepo.StopBlock(*id, now)
-				if err != nil {
-					resultMenu := NewResultMenu(
-						m.Db,
-						[]common.MenuItem{},
-						false,
-						err.Error(),
-					)
-					return resultMenu, resultMenu.Init()
-				}
-				resultMenu := NewResultMenu(
+				projectService := services.NewProjectService(repos.NewProjectRepo(m.Db))
+				subjectService := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
+				projects, _ := projectService.ListProjects()
+				subjects, _ := subjectService.ListSubjects()
+				checkpointMenu := NewCheckpointMenu(
 					m.Db,
-					[]common.MenuItem{},
-					true,
-					fmt.Sprintf("Work block ID %d stopped.", *id),
+					projects,
+					subjects,
+					block,
+					stopBlock,
 				)
-				return resultMenu, resultMenu.Init()
+				return checkpointMenu, checkpointMenu.Init()
 			case "projects":
 				projectMenu := NewProjectMenu(m.Db)
 				return projectMenu, projectMenu.Init()
