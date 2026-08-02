@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Karel Hanák
 // SPDX-License-Identifier: MIT
-package main
+package migrations
 
 var (
 	Migrations = []string{
@@ -31,7 +31,6 @@ var (
 				end_time DATETIME,
 				description TEXT NOT NULL
 			);
-
 		`,
 	}
 )

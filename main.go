@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/khgreav/chronosplit/internal/migrations"
 	"github.com/khgreav/chronosplit/menus"
 
 	tea "charm.land/bubbletea/v2"
@@ -59,7 +60,7 @@ func main() {
 			fmt.Printf("Failed to begin migration transaction: %v\n", err)
 			os.Exit(1)
 		}
-		for _, migration := range Migrations {
+		for _, migration := range migrations.Migrations {
 			_, err := db.Exec(migration)
 			if err != nil {
 				fmt.Printf("Failed to apply migration: %v\n", err)

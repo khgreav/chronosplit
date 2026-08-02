@@ -7,3 +7,6 @@ output
 vendor
 # build
 _build
+# coverage
+coverage.html
+coverage.out

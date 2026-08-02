@@ -1,6 +1,6 @@
 # Copyright (c) 2026 Karel Hanák
 # SPDX-License-Identifier: MIT
-.PHONY: build clean update-deps run check changelog deb-package
+.PHONY: build clean update-deps run check test coverage changelog deb-package
 
 VERSION=dev
 BUILD_DATE=$(shell date -u +'%Y-%m-%d')
@@ -35,6 +35,14 @@ vulncheck:
 	govulncheck ./...
 
 check: vet lint vulncheck
+
+# tests
+test:
+	go test -v -coverpkg=./... ./tests/...
+
+coverage:
+	go test -coverpkg=./... -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html
 
 # packaging
 changelog:

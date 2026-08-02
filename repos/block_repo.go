@@ -83,7 +83,7 @@ func (r *BlockRepo) StopBlock(id int64, timestamp time.Time) error {
 		`
 			UPDATE blocks
 			SET ended_at = ?
-			WHERE id = ?
+			WHERE id = ? AND ended_at IS NULL
 		`,
 		timestamp.UTC(),
 		id,
