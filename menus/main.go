@@ -16,9 +16,9 @@ import (
 )
 
 var mainMenuOptions = []common.MenuItem{
-	{ID: "show", Label: "Show work blocks"},
-	{ID: "start", Label: "Start work block"},
-	{ID: "stop", Label: "Stop work block"},
+	{ID: "show", Label: "Show blocks"},
+	{ID: "start", Label: "Start block"},
+	{ID: "stop", Label: "Stop block"},
 	{ID: "checkpoint", Label: "Create a checkpoint"},
 	{ID: "projects", Label: "Manage projects"},
 	{ID: "subjects", Label: "Manage subjects"},
@@ -68,6 +68,14 @@ func (m MainMenu) View() tea.View {
 		}
 	}
 
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.SelectHint,
+			common.ExitHint,
+		}),
+	)
+
 	v.SetContent(sb.String())
 	return v
 }
@@ -97,6 +105,7 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				exists, err := service.ActiveBlockExists()
 				resultMenu := NewResultMenu(
 					m.DB,
+					"Block operation result",
 					[]common.MenuItem{},
 					true,
 					"",
@@ -108,7 +117,7 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				if exists {
 					resultMenu.Success = false
-					resultMenu.Message = "An active work block already exists."
+					resultMenu.Message = "An active block already exists."
 					return resultMenu, resultMenu.Init()
 				}
 				id, err := service.StartBlock()
@@ -117,12 +126,14 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					resultMenu.Message = err.Error()
 					return resultMenu, resultMenu.Init()
 				}
-				resultMenu.Message = fmt.Sprintf("New work block with ID %d started.", *id)
+				resultMenu.Message = fmt.Sprintf("New block with ID %d started.", *id)
 				return resultMenu, resultMenu.Init()
 			case "stop", "checkpoint":
+				header := "Checkpoint operation result"
 				stopBlock := false
 				if m.Options[m.Index].ID == "stop" {
 					stopBlock = true
+					header = "Block operation result"
 				}
 				service := services.NewBlockService(
 					repos.NewBlockRepo(m.DB),
@@ -131,6 +142,7 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if !exists {
 					resultMenu := NewResultMenu(
 						m.DB,
+						header,
 						[]common.MenuItem{},
 						false,
 						"",
@@ -138,7 +150,7 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					if err != nil {
 						resultMenu.Message = err.Error()
 					} else {
-						resultMenu.Message = "There is no active work block."
+						resultMenu.Message = "There is no active block."
 					}
 					return resultMenu, resultMenu.Init()
 				}
@@ -146,6 +158,7 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err != nil {
 					resultMenu := NewResultMenu(
 						m.DB,
+						header,
 						[]common.MenuItem{},
 						false,
 						err.Error(),
@@ -155,7 +168,27 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				projectService := services.NewProjectService(repos.NewProjectRepo(m.DB))
 				subjectService := services.NewSubjectService(repos.NewSubjectRepo(m.DB))
 				projects, _ := projectService.ListProjects()
+				if len(projects) == 0 {
+					resultMenu := NewResultMenu(
+						m.DB,
+						header,
+						[]common.MenuItem{},
+						false,
+						"There are no defined projects.",
+					)
+					return resultMenu, resultMenu.Init()
+				}
 				subjects, _ := subjectService.ListSubjects()
+				if len(subjects) == 0 {
+					resultMenu := NewResultMenu(
+						m.DB,
+						header,
+						[]common.MenuItem{},
+						false,
+						"There are no defined subjects.",
+					)
+					return resultMenu, resultMenu.Init()
+				}
 				checkpointMenu := NewCheckpointMenu(
 					m.DB,
 					projects,
@@ -173,6 +206,8 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "exit":
 				return m, tea.Quit
 			}
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	return m, nil

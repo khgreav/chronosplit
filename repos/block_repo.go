@@ -44,7 +44,7 @@ func (r *BlockRepo) GetActiveBlock() (*models.Block, error) {
 		LIMIT 1
 	`).Scan(&b.ID, &b.CreatedAt, &b.EndedAt)
 	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("There are no active work blocks.")
+		return nil, fmt.Errorf("There are no active blocks.")
 	}
 	if err != nil {
 		return nil, fmt.Errorf("Failed to retrieve active block: %w", err)
@@ -61,7 +61,7 @@ func (r *BlockRepo) GetActiveBlockID() (*int64, error) {
 		LIMIT 1
 	`).Scan(&id)
 	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("There are no active work blocks.")
+		return nil, fmt.Errorf("There are no active blocks.")
 	}
 	if err != nil {
 		return nil, fmt.Errorf("Failed to retrieve active block: %w", err)
@@ -72,7 +72,7 @@ func (r *BlockRepo) GetActiveBlockID() (*int64, error) {
 func (r *BlockRepo) StartBlock() (*int64, error) {
 	result, err := r.db.Exec("INSERT INTO blocks (created_at) VALUES (?)", time.Now().UTC())
 	if err != nil {
-		return nil, fmt.Errorf("Failed to create start work block: %w", err)
+		return nil, fmt.Errorf("Failed to create a block: %w", err)
 	}
 	id, _ := result.LastInsertId()
 	return &id, nil
@@ -89,7 +89,7 @@ func (r *BlockRepo) StopBlock(id int64, timestamp time.Time) error {
 		id,
 	)
 	if err != nil {
-		return fmt.Errorf("Failed to stop work block: %w", err)
+		return fmt.Errorf("Failed to stop a block: %w", err)
 	}
 	affected, _ := result.RowsAffected()
 	if affected == 0 {

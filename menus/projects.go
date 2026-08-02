@@ -35,7 +35,7 @@ type ProjectMenu struct {
 func NewProjectMenu(db *sql.DB) *ProjectMenu {
 	return &ProjectMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Projects menu\n\n",
+			Header:  "Manage projects\n\n",
 			Options: projectOptions,
 			Index:   0,
 			DB:      db,
@@ -63,6 +63,15 @@ func (m ProjectMenu) View() tea.View {
 		}
 	}
 
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.SelectHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
+
 	v.SetContent(sb.String())
 	return v
 }
@@ -88,7 +97,13 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "list":
 				service := services.NewProjectService(repos.NewProjectRepo(m.DB))
 				projects, err := service.ListProjects()
-				resultMenu := NewResultMenu(m.DB, projectResultOptions, true, "")
+				resultMenu := NewResultMenu(
+					m.DB,
+					"Project operation result",
+					projectResultOptions,
+					true,
+					"",
+				)
 				if err != nil {
 					resultMenu.Success = false
 					resultMenu.Message = err.Error()
@@ -121,6 +136,7 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err != nil {
 					resultMenu := NewResultMenu(
 						m.DB,
+						"Project operation result",
 						projectResultOptions,
 						false,
 						err.Error(),
@@ -138,6 +154,11 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "exit":
 				return m, tea.Quit
 			}
+		case "ctrl+c":
+			mainMenu := NewMainMenu(m.DB)
+			return mainMenu, mainMenu.Init()
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	return m, nil

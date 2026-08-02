@@ -52,7 +52,14 @@ func (m SubjectDeleteMenu) View() tea.View {
 		}
 	}
 
-	sb.WriteString("\n\n[Ctrl-C] Back to subjects menu")
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.BackToSubjectsHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
 
 	v.SetContent(sb.String())
 	return v
@@ -86,6 +93,7 @@ func (m *SubjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			err := service.DeleteSubject(id)
 			resultMenu := NewResultMenu(
 				m.DB,
+				"Subject operation result",
 				subjectResultOptions,
 				true,
 				"",
@@ -100,9 +108,14 @@ func (m *SubjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 			}
 			return resultMenu, resultMenu.Init()
-		case "ctrl+c":
+		case "ctrl+d":
 			subjectMenu := NewSubjectMenu(m.DB)
 			return subjectMenu, subjectMenu.Init()
+		case "ctrl+c":
+			mainMenu := NewMainMenu(m.DB)
+			return mainMenu, mainMenu.Init()
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	return m, nil

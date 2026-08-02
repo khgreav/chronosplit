@@ -35,7 +35,7 @@ type SubjectMenu struct {
 func NewSubjectMenu(db *sql.DB) *SubjectMenu {
 	return &SubjectMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Subjects menu\n\n",
+			Header:  "Manage subjects\n\n",
 			Options: subjectOptions,
 			Index:   0,
 			DB:      db,
@@ -63,6 +63,15 @@ func (m SubjectMenu) View() tea.View {
 		}
 	}
 
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.SelectHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
+
 	v.SetContent(sb.String())
 	return v
 }
@@ -88,7 +97,13 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "list":
 				service := services.NewSubjectService(repos.NewSubjectRepo(m.DB))
 				subjects, err := service.ListSubjects()
-				resultMenu := NewResultMenu(m.DB, subjectResultOptions, true, "")
+				resultMenu := NewResultMenu(
+					m.DB,
+					"Subject operation result",
+					subjectResultOptions,
+					true,
+					"",
+				)
 				if err != nil {
 					resultMenu.Success = false
 					resultMenu.Message = err.Error()
@@ -121,6 +136,7 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err != nil {
 					resultMenu := NewResultMenu(
 						m.DB,
+						"Subject operation result",
 						subjectResultOptions,
 						false,
 						err.Error(),
@@ -138,6 +154,11 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "exit":
 				return m, tea.Quit
 			}
+		case "ctrl+c":
+			mainMenu := NewMainMenu(m.DB)
+			return mainMenu, mainMenu.Init()
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	return m, nil

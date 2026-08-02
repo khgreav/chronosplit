@@ -52,7 +52,14 @@ func (m ProjectDeleteMenu) View() tea.View {
 		}
 	}
 
-	sb.WriteString("\n\n[Ctrl-C] Back to projects menu")
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.BackToProjectsHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
 
 	v.SetContent(sb.String())
 	return v
@@ -86,6 +93,7 @@ func (m *ProjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			err := service.DeleteProject(id)
 			resultMenu := NewResultMenu(
 				m.DB,
+				"Project operation result",
 				projectResultOptions,
 				true,
 				"",
@@ -100,9 +108,14 @@ func (m *ProjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 			}
 			return resultMenu, resultMenu.Init()
-		case "ctrl+c":
+		case "ctrl+d":
 			projectMenu := NewProjectMenu(m.DB)
 			return projectMenu, projectMenu.Init()
+		case "ctrl+c":
+			mainMenu := NewMainMenu(m.DB)
+			return mainMenu, mainMenu.Init()
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	return m, nil

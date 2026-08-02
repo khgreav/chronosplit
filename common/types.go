@@ -4,6 +4,7 @@ package common
 
 import (
 	"database/sql"
+	"fmt"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -17,6 +18,15 @@ type Menu interface {
 type MenuItem struct {
 	ID    string
 	Label string
+}
+
+type MenuHint struct {
+	Key   string
+	Label string
+}
+
+func (h MenuHint) String() string {
+	return fmt.Sprintf("[%s] %s", h.Key, h.Label)
 }
 
 type BaseMenu struct {

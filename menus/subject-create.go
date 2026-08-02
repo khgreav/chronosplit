@@ -26,7 +26,7 @@ func NewSubjectCreateMenu(db *sql.DB) *SubjectCreateMenu {
 	input.Focus()
 	return &SubjectCreateMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Creating a subject\n\n",
+			Header:  "Create a subject\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -52,7 +52,14 @@ func (m SubjectCreateMenu) View() tea.View {
 	sb.WriteString("Please enter subject name:\n")
 	sb.WriteString(m.Input.View())
 
-	sb.WriteString("\n\n[Ctrl-C] Back to main menu")
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.BackToSubjectsHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
 
 	v.SetContent(sb.String())
 	return v
@@ -75,6 +82,7 @@ func (m *SubjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			subject, err := service.CreateSubject(name)
 			resultMenu := NewResultMenu(
 				m.DB,
+				"Subject operation result",
 				subjectResultOptions,
 				true,
 				"",
@@ -90,9 +98,14 @@ func (m *SubjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 			}
 			return resultMenu, resultMenu.Init()
+		case "ctrl+d":
+			subjectMenu := NewSubjectMenu(m.DB)
+			return subjectMenu, subjectMenu.Init()
 		case "ctrl+c":
 			mainMenu := NewMainMenu(m.DB)
 			return mainMenu, mainMenu.Init()
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	var cmd tea.Cmd

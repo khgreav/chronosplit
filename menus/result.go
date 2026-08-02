@@ -23,10 +23,10 @@ type ResultMenu struct {
 	Message string
 }
 
-func NewResultMenu(db *sql.DB, customOptions []common.MenuItem, success bool, msg string) *ResultMenu {
+func NewResultMenu(db *sql.DB, header string, customOptions []common.MenuItem, success bool, msg string) *ResultMenu {
 	return &ResultMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Block operation result\n\n",
+			Header:  header,
 			Options: append(customOptions, resultOptions...),
 			Index:   0,
 			DB:      db,
@@ -45,6 +45,7 @@ func (m ResultMenu) View() tea.View {
 
 	var sb strings.Builder
 	sb.WriteString(m.Header)
+	sb.WriteString("\n\n")
 	style := common.GetStyle(m.Success)
 	sb.WriteString(style.Render(m.Message))
 	sb.WriteString("\n\n")
@@ -58,6 +59,15 @@ func (m ResultMenu) View() tea.View {
 			fmt.Fprintf(&sb, "%s %s\n", cursor, option.Label)
 		}
 	}
+
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.SelectHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
 
 	v.SetContent(sb.String())
 	return v
@@ -93,6 +103,11 @@ func (m *ResultMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "exit":
 				return m, tea.Quit
 			}
+		case "ctrl+c":
+			mainMenu := NewMainMenu(m.DB)
+			return mainMenu, mainMenu.Init()
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	return m, nil

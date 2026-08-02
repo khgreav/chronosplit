@@ -47,7 +47,7 @@ func NewCheckpointMenu(
 	input := textinput.New()
 	return &CheckpointMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Creating a checkpoint\n\n",
+			Header:  "Create a checkpoint\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -105,7 +105,13 @@ func (m *CheckpointMenu) View() tea.View {
 		sb.WriteString(m.Input.View())
 	}
 
-	sb.WriteString("\n\n[Ctrl-C] Back to main menu")
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
 
 	v.SetContent(sb.String())
 	return v
@@ -169,6 +175,7 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 				resultMenu := NewResultMenu(
 					m.DB,
+					"Checkpoint operation result",
 					[]common.MenuItem{},
 					true,
 					"",

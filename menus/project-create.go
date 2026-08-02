@@ -26,7 +26,7 @@ func NewProjectCreateMenu(db *sql.DB) *ProjectCreateMenu {
 	input.Focus()
 	return &ProjectCreateMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Creating a project\n\n",
+			Header:  "Create a project\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -52,7 +52,14 @@ func (m *ProjectCreateMenu) View() tea.View {
 	sb.WriteString("Please enter project name:\n")
 	sb.WriteString(m.Input.View())
 
-	sb.WriteString("\n\n[Ctrl-C] Back to main menu")
+	sb.WriteString(
+		common.RenderHints([]common.MenuHint{
+			common.ConfirmHint,
+			common.BackToProjectsHint,
+			common.BackToMainHint,
+			common.ExitHint,
+		}),
+	)
 
 	v.SetContent(sb.String())
 	return v
@@ -78,6 +85,7 @@ func (m *ProjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			resultMenu := NewResultMenu(
 				m.DB,
+				"Project operation result",
 				projectResultOptions,
 				true,
 				"",
@@ -93,9 +101,14 @@ func (m *ProjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 			}
 			return resultMenu, resultMenu.Init()
+		case "ctrl+d":
+			projectMenu := NewProjectMenu(m.DB)
+			return projectMenu, projectMenu.Init()
 		case "ctrl+c":
 			mainMenu := NewMainMenu(m.DB)
 			return mainMenu, mainMenu.Init()
+		case "ctrl+q":
+			return m, tea.Quit
 		}
 	}
 	var cmd tea.Cmd
