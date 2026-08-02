@@ -11,6 +11,10 @@
 
 Chronosplit is a TUI time tracking tool I built to my liking for personal use.
 
+
+![Demo](docs/demo.gif)
+
+
 The core idea is working with a single active `block` of work at a time, which can be sliced into
 chunks I call `checkpoints` within this project.
 
