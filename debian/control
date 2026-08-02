@@ -1,0 +1,16 @@
+Source: chronosplit
+Section: utils
+Priority: optional
+Maintainer: Karel Hanák <khgreav@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ golang-1.25-go | golang-any
+Standards-Version: 4.6.2
+Homepage: https://github.com/khgreav/chronosplit
+
+Package: chronosplit
+Architecture: any
+Depends: ${misc:Depends}
+Description: Checkpoint-based time tracker.
+ A simple TUI application to track time in work blocks with checkpoints,
+ custom project and subject tags. The data is stored in SQLite database.

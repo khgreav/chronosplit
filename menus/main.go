@@ -8,6 +8,7 @@ import (
 	"github.com/khgreav/chronosplit/common"
 	"github.com/khgreav/chronosplit/repos"
 	"github.com/khgreav/chronosplit/services"
+	"github.com/khgreav/chronosplit/version"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -51,7 +52,8 @@ func (m MainMenu) View() tea.View {
 	sb.WriteString("██║     ██╔══██║██╔══██╗██║   ██║██║╚████║██║   ██║╚════██║██╔═══╝ ██║     ██║   ██║\n")
 	sb.WriteString("╚██████╗██║  ██║██║  ██║╚██████╔╝██║ ╚███║╚██████╔╝███████║██║     ███████║██║   ██║\n")
 	sb.WriteString(" ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚══╝ ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝   ╚═╝\n")
-	sb.WriteString("\n")
+	sb.WriteString(version.String())
+	sb.WriteString("\n\n")
 	sb.WriteString(m.Header)
 
 	for i, option := range m.Options {

@@ -1,15 +1,18 @@
 package main
 
 import (
-	"github.com/khgreav/chronosplit/menus"
 	"database/sql"
 	"fmt"
 	"os"
+
+	"github.com/khgreav/chronosplit/menus"
 
 	tea "charm.land/bubbletea/v2"
 
 	_ "modernc.org/sqlite"
 )
+
+var Version = "dev"
 
 var DB_FILE = "app.db?_pragma=foreign_keys(1)"
 
