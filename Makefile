@@ -4,10 +4,10 @@
 
 # dev
 build: update-deps
-    CGO_ENABLED=0 go build -trimpath -o bin/chronosplit .
+	mkdir -p bin && CGO_ENABLED=0 go build -trimpath -o bin/chronosplit .
 
 clean:
-	rm -rf output
+	rm -rf bin
 
 update-deps:
 	go get -u
