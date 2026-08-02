@@ -1,6 +1,6 @@
-chronosplit (0.1.0~alpha~2.gbp21012c) UNRELEASED; urgency=medium
+chronosplit (0.1.0~alpha~3.gbpe4b223) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @21012c6a3af8cbad052386e47c1e9803b969ab14 **
+  ** SNAPSHOT build @e4b223770a74d0a84957e4c540235c8dee53826f **
 
   [Karel Hanák]
   * Initial commit
@@ -8,5 +8,14 @@ chronosplit (0.1.0~alpha~2.gbp21012c) UNRELEASED; urgency=medium
   * added subject management
   * added missing logic and services, fixed minor bugs
   * added packaging files
+  * added staticcheck, linter and vulnerability check
+  * added short license headers
+  * debian package: added patch for database path
+  * updated dependencies
+  * added navigation hints, updated section titles
+  * updated README
+  * added demo to README
+  * Makefile: fixed build and clean commands
+  * fixed formatting of certain outputs
 
- -- Karel Hanák <khgreav@gmail.com>  Sun, 02 Aug 2026 17:23:47 +0200
+ -- Karel Hanák <khgreav@gmail.com>  Sun, 02 Aug 2026 20:50:42 +0200
