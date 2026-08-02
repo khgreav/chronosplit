@@ -4,9 +4,11 @@ Priority: optional
 Maintainer: Karel Hanák <khgreav@gmail.com>
 Build-Depends:
  debhelper-compat (= 13),
+ dh-golang,
  golang-1.25-go | golang-any
 Standards-Version: 4.6.2
 Homepage: https://github.com/khgreav/chronosplit
+XS-Go-Import-Path: github.com/khgreav/chronosplit
 
 Package: chronosplit
 Architecture: any

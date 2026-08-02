@@ -2,19 +2,25 @@
 # SPDX-License-Identifier: MIT
 .PHONY: build clean update-deps run check changelog deb-package
 
+VERSION=dev
+BUILD_DATE=$(shell date -u +'%Y-%m-%d')
+MODULE_PATH=github.com/khgreav/chronosplit
+
+LDFLAGS := -ldflags="-X $(MODULE_PATH)/version.Version=$(VERSION) -X $(MODULE_PATH)/version.BuildDate=$(BUILD_DATE)"
+
 # dev
 build: update-deps
-	mkdir -p bin && CGO_ENABLED=0 go build -trimpath -o bin/chronosplit .
+	mkdir -p bin && CGO_ENABLED=0 go build $(LDFLAGS) -o bin/chronosplit .
 
 clean:
-	rm -rf bin
+	rm -rf bin chronosplit.db
 
 update-deps:
-	go get -u
-	go mod tidy
+	go get -u && go mod tidy
+	go mod vendor
 
 run:
-	go run .
+	CHRONOSPLIT_DB="./chronosplit.db" go run $(LDFLAGS) .
 
 # analysis
 vet:
@@ -34,5 +40,5 @@ check: vet lint vulncheck
 changelog:
 	gbp dch -aS
 
-deb-package:
+deb-package: update-deps
 	debuild -us -uc -b -tc

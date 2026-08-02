@@ -1,19 +1,24 @@
 #!/usr/bin/make -f
 
-export PATH := /usr/local/go/bin:/usr/lib/go-1.25/bin:$(PATH)
 MODULE_PATH := github.com/khgreav/chronosplit
-VERSION := $(shell dpkg-parsechangelog -S Version)
+PKG_NAME := version
+DEB_VERSION := $(shell dpkg-parsechangelog -S Version)
+DEB_DATE    := $(shell dpkg-parsechangelog -S Date | date -u -f - "+%Y-%m-%dT%H:%M:%SZ")
+
+export CGO_ENABLED = 0
+export LD_FLAGS = -X '$(MODULE_PATH)/$(PKG_NAME).Version=$(DEB_VERSION)' -X '$(MODULE_PATH)/$(PKG_NAME).BuildDate=$(DEB_DATE)'
 
 %:
-	dh $@
+	dh $@ --builddirectory=_build --buildsystem=golang
 
 override_dh_auto_build:
-	CGO_ENABLED=0 go build -trimpath \
-		-ldflags="-s -w -X $(MODULE_PATH)/version.Version=$(VERSION)" \
-		-o bin/chronosplit .
+	dh_auto_build -- -ldflags="$(LD_FLAGS)"
 
 override_dh_auto_install:
-	install -D -m 0755 bin/chronosplit debian/chronosplit/usr/bin/chronosplit
+	install -d debian/chronosplit/usr/bin
+	install -m 0755 _build/bin/chronosplit debian/chronosplit/usr/bin/chronosplit
+
+override_dh_dwz:
 
 override_dh_auto_test:
 	go test -v ./...

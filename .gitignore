@@ -1,5 +1,9 @@
 # db
-app.db
+chronosplit.db
 # binaries
 bin
 output
+# vendor
+vendor
+# build
+_build

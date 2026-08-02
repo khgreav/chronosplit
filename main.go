@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/khgreav/chronosplit/menus"
 
@@ -14,12 +15,37 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-var DBFile = "app.db?_pragma=foreign_keys(1)"
+var DBFile = "chronosplit.db?_pragma=foreign_keys(1)"
+
+func getDBPath() (string, error) {
+	if envPath := os.Getenv("CHRONOSPLIT_DB"); envPath != "" {
+		return envPath, nil
+	}
+	dataDir := os.Getenv("XDG_DATA_HOME")
+	if dataDir == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("Unable to find user home dir: %w", err)
+		}
+		dataDir = filepath.Join(home, ".local", "share")
+	}
+
+	appDir := filepath.Join(dataDir, "chronosplit")
+	if err := os.MkdirAll(appDir, 0700); err != nil {
+		return "", fmt.Errorf("Unable to create data directory: %w", err)
+	}
+	return filepath.Join(appDir, DBFile), nil
+}
 
 func main() {
-	_, err := os.Stat(DBFile)
+	dbPath, err := getDBPath()
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	_, err = os.Stat(dbPath)
 	exists := err == nil
-	db, err := sql.Open("sqlite", DBFile)
+	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		panic(err)
 	}
