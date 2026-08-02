@@ -51,6 +51,7 @@ func (m *ProjectCreateMenu) View() tea.View {
 	}
 	sb.WriteString("Please enter project name:\n")
 	sb.WriteString(m.Input.View())
+	sb.WriteString("\n")
 
 	sb.WriteString(
 		common.RenderHints([]common.MenuHint{

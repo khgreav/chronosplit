@@ -103,6 +103,7 @@ func (m *CheckpointMenu) View() tea.View {
 		}
 		sb.WriteString("Enter a description:\n")
 		sb.WriteString(m.Input.View())
+		sb.WriteString("\n")
 	}
 
 	sb.WriteString(

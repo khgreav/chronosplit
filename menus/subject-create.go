@@ -51,6 +51,7 @@ func (m SubjectCreateMenu) View() tea.View {
 	}
 	sb.WriteString("Please enter subject name:\n")
 	sb.WriteString(m.Input.View())
+	sb.WriteString("\n")
 
 	sb.WriteString(
 		common.RenderHints([]common.MenuHint{
