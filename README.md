@@ -54,12 +54,12 @@ The project was built using the following libraries:
 - [Bubble Tea](https://github.com/charmbracelet/bubbletea): Used for menu construction and navigation.
 - [Bubbles](https://github.com/charmbracelet/bubbles): Used for the framework compatible text input component to handle user input.
 - [Lip Gloss](https://github.com/charmbracelet/lipgloss): Used for styling of success and error messages, tabular outputs and highlighting of currently selected menu item.
-- [`modernc.org/sqlite`](https://gitlab.com/cznic/sqlite): Pure Go SQLite driver.
+- [modernc.org/sqlite](https://gitlab.com/cznic/sqlite): Pure Go SQLite driver.
 
 ## Notes ~~or a TODO list in disguise, the jury is still out~~
 
 - I am relatively new to Go, so I'm sure Go-heads will find many things wrong with this project, if they ever find it in the sea of pet projects.
-- I definitely want to shift some of the business logic from menus to services.
+- I definitely want to shift some of the business logic from menus to services, probably make use of custom tea.Cmd.
 - ~~I will add a separate logic to render navigation hints.~~ I DID IT!
 - Yes, I will add godocs when I find the time to do it, I'm sure it will happen soon.
 - This project used local AI ***gasp*** to copy `project` handling and make it into `subject` handling.
