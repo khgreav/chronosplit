@@ -13,7 +13,7 @@ var (
 
 func RenderHints(hints []MenuHint) string {
 	var sb strings.Builder
-	sb.WriteString("\n\n")
+	sb.WriteString("\n")
 	for i, hint := range hints {
 		sb.WriteString(hint.String())
 		if i != len(hints)-1 {
