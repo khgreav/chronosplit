@@ -1,6 +1,5 @@
-export DEBFULLNAME ?= Karel Hanák
-export DEBEMAIL ?= khgreav@gmail.com
-
+# Copyright (c) 2026 Karel Hanák
+# SPDX-License-Identifier: MIT
 .PHONY: build clean update-deps run check changelog deb-package
 
 # dev
