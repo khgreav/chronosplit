@@ -30,27 +30,27 @@ func main() {
 	if !exists {
 		tx, err := db.Begin()
 		if err != nil {
-			fmt.Printf("Failed to begin migration transaction: %v", err)
+			fmt.Printf("Failed to begin migration transaction: %v\n", err)
 			os.Exit(1)
 		}
 		for _, migration := range Migrations {
 			_, err := db.Exec(migration)
 			if err != nil {
-				fmt.Printf("Failed to apply migration: %v", err)
+				fmt.Printf("Failed to apply migration: %v\n", err)
 				_ = tx.Rollback()
 				os.Exit(1)
 			}
 		}
 		err = tx.Commit()
 		if err != nil {
-			fmt.Printf("Failed to commit migration changes: %v", err)
+			fmt.Printf("Failed to commit migration changes: %v\n", err)
 			os.Exit(1)
 		}
 	}
 
 	app := tea.NewProgram(menus.NewMainMenu(db))
 	if _, err := app.Run(); err != nil {
-		fmt.Printf("Something is borked: %v", err)
+		fmt.Printf("Something is borked: %v\n", err)
 		os.Exit(1)
 	}
 }
