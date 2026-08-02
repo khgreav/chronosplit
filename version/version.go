@@ -1,3 +1,4 @@
+// Package version provides exports for project version and build date.
 package version
 
 import "fmt"

@@ -24,7 +24,7 @@ func NewProjectDeleteMenu(db *sql.DB, projects []models.Project) *ProjectDeleteM
 			Header:  "Delete a project\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 		Projects: projects,
 	}
@@ -80,10 +80,10 @@ func (m *ProjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			id := m.Projects[m.Index].ID
-			service := services.NewProjectService(repos.NewProjectRepo(m.Db))
+			service := services.NewProjectService(repos.NewProjectRepo(m.DB))
 			err := service.DeleteProject(id)
 			resultMenu := NewResultMenu(
-				m.Db,
+				m.DB,
 				projectResultOptions,
 				true,
 				"",
@@ -99,7 +99,7 @@ func (m *ProjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return resultMenu, resultMenu.Init()
 		case "ctrl+c":
-			projectMenu := NewProjectMenu(m.Db)
+			projectMenu := NewProjectMenu(m.DB)
 			return projectMenu, projectMenu.Init()
 		}
 	}

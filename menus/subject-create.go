@@ -27,7 +27,7 @@ func NewSubjectCreateMenu(db *sql.DB) *SubjectCreateMenu {
 			Header:  "Creating a subject\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 		Input: input,
 		Retry: false,
@@ -69,10 +69,10 @@ func (m *SubjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			// success
 			m.Input.Blur()
-			service := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
+			service := services.NewSubjectService(repos.NewSubjectRepo(m.DB))
 			subject, err := service.CreateSubject(name)
 			resultMenu := NewResultMenu(
-				m.Db,
+				m.DB,
 				subjectResultOptions,
 				true,
 				"",
@@ -89,7 +89,7 @@ func (m *SubjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return resultMenu, resultMenu.Init()
 		case "ctrl+c":
-			mainMenu := NewMainMenu(m.Db)
+			mainMenu := NewMainMenu(m.DB)
 			return mainMenu, mainMenu.Init()
 		}
 	}

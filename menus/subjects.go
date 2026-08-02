@@ -36,7 +36,7 @@ func NewSubjectMenu(db *sql.DB) *SubjectMenu {
 			Header:  "Subjects menu\n\n",
 			Options: subjectOptions,
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 	}
 }
@@ -84,9 +84,9 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.Options[m.Index].ID {
 			case "list":
-				service := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
+				service := services.NewSubjectService(repos.NewSubjectRepo(m.DB))
 				subjects, err := service.ListSubjects()
-				resultMenu := NewResultMenu(m.Db, subjectResultOptions, true, "")
+				resultMenu := NewResultMenu(m.DB, subjectResultOptions, true, "")
 				if err != nil {
 					resultMenu.Success = false
 					resultMenu.Message = err.Error()
@@ -111,14 +111,14 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				return resultMenu, resultMenu.Init()
 			case "create":
-				subjectCreateMenu := NewSubjectCreateMenu(m.Db)
+				subjectCreateMenu := NewSubjectCreateMenu(m.DB)
 				return subjectCreateMenu, subjectCreateMenu.Init()
 			case "delete":
-				service := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
+				service := services.NewSubjectService(repos.NewSubjectRepo(m.DB))
 				subjects, err := service.ListSubjects()
 				if err != nil {
 					resultMenu := NewResultMenu(
-						m.Db,
+						m.DB,
 						subjectResultOptions,
 						false,
 						err.Error(),
@@ -126,12 +126,12 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					return resultMenu, resultMenu.Init()
 				}
 				subjectDeleteMenu := NewSubjectDeleteMenu(
-					m.Db,
+					m.DB,
 					subjects,
 				)
 				return subjectDeleteMenu, subjectDeleteMenu.Init()
 			case "back":
-				mainMenu := NewMainMenu(m.Db)
+				mainMenu := NewMainMenu(m.DB)
 				return mainMenu, mainMenu.Init()
 			case "exit":
 				return m, tea.Quit

@@ -33,7 +33,7 @@ func NewMainMenu(db *sql.DB) *MainMenu {
 			Header:  "Make your life slightly less hellish with a tailored time tracking solution.\n\n",
 			Options: mainMenuOptions,
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 	}
 }
@@ -90,11 +90,11 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			switch m.Options[m.Index].ID {
 			case "start":
 				service := services.NewBlockService(
-					repos.NewBlockRepo(m.Db),
+					repos.NewBlockRepo(m.DB),
 				)
 				exists, err := service.ActiveBlockExists()
 				resultMenu := NewResultMenu(
-					m.Db,
+					m.DB,
 					[]common.MenuItem{},
 					true,
 					"",
@@ -123,12 +123,12 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					stopBlock = true
 				}
 				service := services.NewBlockService(
-					repos.NewBlockRepo(m.Db),
+					repos.NewBlockRepo(m.DB),
 				)
 				exists, err := service.ActiveBlockExists()
 				if !exists {
 					resultMenu := NewResultMenu(
-						m.Db,
+						m.DB,
 						[]common.MenuItem{},
 						false,
 						"",
@@ -143,19 +143,19 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				block, err := service.GetActiveBlock()
 				if err != nil {
 					resultMenu := NewResultMenu(
-						m.Db,
+						m.DB,
 						[]common.MenuItem{},
 						false,
 						err.Error(),
 					)
 					return resultMenu, resultMenu.Init()
 				}
-				projectService := services.NewProjectService(repos.NewProjectRepo(m.Db))
-				subjectService := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
+				projectService := services.NewProjectService(repos.NewProjectRepo(m.DB))
+				subjectService := services.NewSubjectService(repos.NewSubjectRepo(m.DB))
 				projects, _ := projectService.ListProjects()
 				subjects, _ := subjectService.ListSubjects()
 				checkpointMenu := NewCheckpointMenu(
-					m.Db,
+					m.DB,
 					projects,
 					subjects,
 					block,
@@ -163,10 +163,10 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 				return checkpointMenu, checkpointMenu.Init()
 			case "projects":
-				projectMenu := NewProjectMenu(m.Db)
+				projectMenu := NewProjectMenu(m.DB)
 				return projectMenu, projectMenu.Init()
 			case "subjects":
-				subjectMenu := NewSubjectMenu(m.Db)
+				subjectMenu := NewSubjectMenu(m.DB)
 				return subjectMenu, subjectMenu.Init()
 			case "exit":
 				return m, tea.Quit

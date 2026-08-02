@@ -12,18 +12,18 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-var Version = "dev"
-
-var DB_FILE = "app.db?_pragma=foreign_keys(1)"
+var DBFile = "app.db?_pragma=foreign_keys(1)"
 
 func main() {
-	_, err := os.Stat(DB_FILE)
+	_, err := os.Stat(DBFile)
 	exists := err == nil
-	db, err := sql.Open("sqlite", DB_FILE)
+	db, err := sql.Open("sqlite", DBFile)
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	if !exists {
 		tx, err := db.Begin()
@@ -35,11 +35,15 @@ func main() {
 			_, err := db.Exec(migration)
 			if err != nil {
 				fmt.Printf("Failed to apply migration: %v", err)
-				tx.Rollback()
+				_ = tx.Rollback()
 				os.Exit(1)
 			}
 		}
-		tx.Commit()
+		err = tx.Commit()
+		if err != nil {
+			fmt.Printf("Failed to commit migration changes: %v", err)
+			os.Exit(1)
+		}
 	}
 
 	app := tea.NewProgram(menus.NewMainMenu(db))

@@ -1,9 +1,10 @@
 package repos
 
 import (
-	"github.com/khgreav/chronosplit/models"
 	"database/sql"
 	"fmt"
+
+	"github.com/khgreav/chronosplit/models"
 )
 
 type SubjectRepo struct {
@@ -24,7 +25,9 @@ func (r *SubjectRepo) List() ([]models.Subject, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to query subjects: %w", err)
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	var subjects []models.Subject
 

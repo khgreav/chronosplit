@@ -25,7 +25,9 @@ func (r *CheckpointRepo) List() ([]models.Checkpoint, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to query checkpoints: %w", err)
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	var checkpoints []models.Checkpoint
 
@@ -65,7 +67,9 @@ func (r *CheckpointRepo) ListByBlock(blockID int64) ([]models.Checkpoint, error)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to query checkpoints for block %d: %w", blockID, err)
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	var checkpoints []models.Checkpoint
 
@@ -105,7 +109,9 @@ func (r *CheckpointRepo) ListByProject(projectID int64) ([]models.Checkpoint, er
 	if err != nil {
 		return nil, fmt.Errorf("Failed to query checkpoints for project %d: %w", projectID, err)
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	var checkpoints []models.Checkpoint
 
@@ -145,7 +151,9 @@ func (r *CheckpointRepo) ListBySubject(subjectID int64) ([]models.Checkpoint, er
 	if err != nil {
 		return nil, fmt.Errorf("Failed to query checkpoints for subject %d: %w", subjectID, err)
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	var checkpoints []models.Checkpoint
 

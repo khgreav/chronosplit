@@ -1,0 +1,11 @@
+version: "2"
+
+linters:
+  enable:
+    - godoclint
+    - staticcheck
+  settings:
+    staticcheck:
+      checks:
+        - "all"
+        - "-ST1005"

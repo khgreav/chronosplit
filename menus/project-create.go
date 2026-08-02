@@ -27,7 +27,7 @@ func NewProjectCreateMenu(db *sql.DB) *ProjectCreateMenu {
 			Header:  "Creating a project\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 		Input: input,
 		Retry: false,
@@ -70,12 +70,12 @@ func (m *ProjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// success
 			m.Input.Blur()
 
-			service := services.NewProjectService(repos.NewProjectRepo(m.Db))
+			service := services.NewProjectService(repos.NewProjectRepo(m.DB))
 
 			project, err := service.CreateProject(name)
 
 			resultMenu := NewResultMenu(
-				m.Db,
+				m.DB,
 				projectResultOptions,
 				true,
 				"",
@@ -92,7 +92,7 @@ func (m *ProjectCreateMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return resultMenu, resultMenu.Init()
 		case "ctrl+c":
-			mainMenu := NewMainMenu(m.Db)
+			mainMenu := NewMainMenu(m.DB)
 			return mainMenu, mainMenu.Init()
 		}
 	}

@@ -28,8 +28,8 @@ type CheckpointMenu struct {
 	Projects     []models.Project
 	Subjects     []models.Subject
 	Block        *models.Block
-	ProjectId    int64
-	SubjectId    int64
+	ProjectID    int64
+	SubjectID    int64
 	StopBlock    bool
 	Input        textinput.Model
 	Retry        bool
@@ -48,14 +48,14 @@ func NewCheckpointMenu(
 			Header:  "Creating a checkpoint\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 		CurrentState: ProjectState,
 		Projects:     projects,
 		Subjects:     subjects,
 		Block:        block,
-		ProjectId:    -1,
-		SubjectId:    -1,
+		ProjectID:    -1,
+		SubjectID:    -1,
 		StopBlock:    stopBlock,
 		Input:        input,
 		Retry:        false,
@@ -150,10 +150,10 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.CurrentState {
 			case ProjectState:
-				m.ProjectId = m.Projects[m.Index].ID
+				m.ProjectID = m.Projects[m.Index].ID
 				m.CurrentState = SubjectState
 			case SubjectState:
-				m.SubjectId = m.Subjects[m.Index].ID
+				m.SubjectID = m.Subjects[m.Index].ID
 				m.CurrentState = DescriptionState
 				m.Input.Focus()
 			case DescriptionState:
@@ -166,21 +166,21 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.Input.Blur()
 
 				resultMenu := NewResultMenu(
-					m.Db,
+					m.DB,
 					[]common.MenuItem{},
 					true,
 					"",
 				)
 
-				service := services.NewCheckpointService(repos.NewCheckpointRepo(m.Db))
+				service := services.NewCheckpointService(repos.NewCheckpointRepo(m.DB))
 				now := time.Now()
-				var previousCheckpointId *int64
+				var previousCheckpointID *int64
 
-				tx, err := m.Db.Begin()
+				tx, err := m.DB.Begin()
 				if err != nil {
 					resultMenu.Success = false
 					resultMenu.Message = fmt.Sprintf("Failed to start transaction: %v", err)
-					tx.Rollback()
+					_ = tx.Rollback()
 					return resultMenu, resultMenu.Init()
 				}
 
@@ -189,29 +189,29 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err != nil {
 					resultMenu.Success = false
 					resultMenu.Message = err.Error()
-					tx.Rollback()
+					_ = tx.Rollback()
 					return resultMenu, resultMenu.Init()
 				}
 				// IF PREVIOUS CHECKPOINT EXISTS, END CONCLUDE IT
 				if lastCheckpoint != nil {
-					previousCheckpointId = &lastCheckpoint.ID
+					previousCheckpointID = &lastCheckpoint.ID
 					lastCheckpoint.EndTime = &now
 					err := service.UpdateCheckpoint(lastCheckpoint)
 					if err != nil {
 						resultMenu.Success = false
 						resultMenu.Message = err.Error()
-						tx.Rollback()
+						_ = tx.Rollback()
 						return resultMenu, resultMenu.Init()
 					}
 				}
 
 				if m.StopBlock {
-					blockService := services.NewBlockService(repos.NewBlockRepo(m.Db))
+					blockService := services.NewBlockService(repos.NewBlockRepo(m.DB))
 					err := blockService.StopBlock(m.Block.ID, now)
 					if err != nil {
 						resultMenu.Success = false
 						resultMenu.Message = err.Error()
-						tx.Rollback()
+						_ = tx.Rollback()
 						return resultMenu, resultMenu.Init()
 					}
 				}
@@ -219,9 +219,9 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				newCheckpoint := &models.Checkpoint{
 					ID:                   0,
 					BlockID:              m.Block.ID,
-					ProjectID:            m.ProjectId,
-					SubjectID:            m.SubjectId,
-					PreviousCheckpointID: previousCheckpointId,
+					ProjectID:            m.ProjectID,
+					SubjectID:            m.SubjectID,
+					PreviousCheckpointID: previousCheckpointID,
 					StartTime:            now,
 					Description:          desc,
 				}
@@ -234,13 +234,13 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if err != nil {
 					resultMenu.Success = false
 					resultMenu.Message = err.Error()
-					tx.Rollback()
+					_ = tx.Rollback()
 				} else {
 					err := tx.Commit()
 					if err != nil {
 						resultMenu.Success = false
 						resultMenu.Message = fmt.Sprintf("Failed to commit transaction: %v", err)
-						tx.Rollback()
+						_ = tx.Rollback()
 						return resultMenu, resultMenu.Init()
 					}
 					line := fmt.Sprintf(
@@ -259,7 +259,7 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return resultMenu, resultMenu.Init()
 			}
 		case "ctrl+c":
-			mainMenu := NewMainMenu(m.Db)
+			mainMenu := NewMainMenu(m.DB)
 			return mainMenu, mainMenu.Init()
 		}
 	}

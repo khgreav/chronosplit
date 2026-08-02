@@ -36,7 +36,7 @@ func NewProjectMenu(db *sql.DB) *ProjectMenu {
 			Header:  "Projects menu\n\n",
 			Options: projectOptions,
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 	}
 }
@@ -84,9 +84,9 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.Options[m.Index].ID {
 			case "list":
-				service := services.NewProjectService(repos.NewProjectRepo(m.Db))
+				service := services.NewProjectService(repos.NewProjectRepo(m.DB))
 				projects, err := service.ListProjects()
-				resultMenu := NewResultMenu(m.Db, projectResultOptions, true, "")
+				resultMenu := NewResultMenu(m.DB, projectResultOptions, true, "")
 				if err != nil {
 					resultMenu.Success = false
 					resultMenu.Message = err.Error()
@@ -111,14 +111,14 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				return resultMenu, resultMenu.Init()
 			case "create":
-				projectCreateMenu := NewProjectCreateMenu(m.Db)
+				projectCreateMenu := NewProjectCreateMenu(m.DB)
 				return projectCreateMenu, projectCreateMenu.Init()
 			case "delete":
-				service := services.NewProjectService(repos.NewProjectRepo(m.Db))
+				service := services.NewProjectService(repos.NewProjectRepo(m.DB))
 				projects, err := service.ListProjects()
 				if err != nil {
 					resultMenu := NewResultMenu(
-						m.Db,
+						m.DB,
 						projectResultOptions,
 						false,
 						err.Error(),
@@ -126,12 +126,12 @@ func (m *ProjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					return resultMenu, resultMenu.Init()
 				}
 				projectDeleteMenu := NewProjectDeleteMenu(
-					m.Db,
+					m.DB,
 					projects,
 				)
 				return projectDeleteMenu, projectDeleteMenu.Init()
 			case "back":
-				mainMenu := NewMainMenu(m.Db)
+				mainMenu := NewMainMenu(m.DB)
 				return mainMenu, mainMenu.Init()
 			case "exit":
 				return m, tea.Quit

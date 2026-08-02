@@ -50,7 +50,7 @@ func (r *BlockRepo) GetActiveBlock() (*models.Block, error) {
 	return &b, nil
 }
 
-func (r *BlockRepo) GetActiveBlockId() (*int64, error) {
+func (r *BlockRepo) GetActiveBlockID() (*int64, error) {
 	var id int64
 	err := r.db.QueryRow(`
 		SELECT id
@@ -72,7 +72,7 @@ func (r *BlockRepo) StartBlock() (*int64, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create start work block: %w", err)
 	}
-	id, err := result.LastInsertId()
+	id, _ := result.LastInsertId()
 	return &id, nil
 }
 

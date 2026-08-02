@@ -1,11 +1,12 @@
-chronosplit (0.1.0~alpha~1.gbp4f5039) UNRELEASED; urgency=medium
+chronosplit (0.1.0~alpha~2.gbp21012c) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @4f5039fc8db8665cb3d45fdb7d96d3a70861d46c **
+  ** SNAPSHOT build @21012c6a3af8cbad052386e47c1e9803b969ab14 **
 
-  *
+  [Karel Hanák]
   * Initial commit
   * fixed project import paths
   * added subject management
   * added missing logic and services, fixed minor bugs
+  * added packaging files
 
- -- Karel Hanák <khgreav@gmail.com>  Sun, 02 Aug 2026 16:58:03 +0200
+ -- Karel Hanák <khgreav@gmail.com>  Sun, 02 Aug 2026 17:23:47 +0200

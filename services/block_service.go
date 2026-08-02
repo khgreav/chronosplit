@@ -23,8 +23,8 @@ func (s *BlockService) GetActiveBlock() (*models.Block, error) {
 	return s.repo.GetActiveBlock()
 }
 
-func (s *BlockService) GetActiveBlockId() (*int64, error) {
-	return s.repo.GetActiveBlockId()
+func (s *BlockService) GetActiveBlockID() (*int64, error) {
+	return s.repo.GetActiveBlockID()
 }
 
 func (s *BlockService) StartBlock() (*int64, error) {

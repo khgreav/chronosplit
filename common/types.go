@@ -21,7 +21,7 @@ type BaseMenu struct {
 	Header  string
 	Options []MenuItem
 	Index   int
-	Db      *sql.DB
+	DB      *sql.DB
 }
 
 func (m BaseMenu) GetCursor(i int) string {

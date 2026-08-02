@@ -27,7 +27,7 @@ func NewResultMenu(db *sql.DB, customOptions []common.MenuItem, success bool, ms
 			Header:  "Block operation result\n\n",
 			Options: append(customOptions, resultOptions...),
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 		Success: success,
 		Message: msg,
@@ -80,13 +80,13 @@ func (m *ResultMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			switch m.Options[m.Index].ID {
 			case "projects":
-				projectMenu := NewProjectMenu(m.Db)
+				projectMenu := NewProjectMenu(m.DB)
 				return projectMenu, projectMenu.Init()
 			case "subjects":
-				subjectMenu := NewSubjectMenu(m.Db)
+				subjectMenu := NewSubjectMenu(m.DB)
 				return subjectMenu, subjectMenu.Init()
 			case "back":
-				mainMenu := NewMainMenu(m.Db)
+				mainMenu := NewMainMenu(m.DB)
 				return mainMenu, mainMenu.Init()
 			case "exit":
 				return m, tea.Quit

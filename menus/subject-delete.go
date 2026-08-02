@@ -24,7 +24,7 @@ func NewSubjectDeleteMenu(db *sql.DB, subjects []models.Subject) *SubjectDeleteM
 			Header:  "Delete a subject\n\n",
 			Options: []common.MenuItem{},
 			Index:   0,
-			Db:      db,
+			DB:      db,
 		},
 		Subjects: subjects,
 	}
@@ -80,10 +80,10 @@ func (m *SubjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			id := m.Subjects[m.Index].ID
-			service := services.NewSubjectService(repos.NewSubjectRepo(m.Db))
+			service := services.NewSubjectService(repos.NewSubjectRepo(m.DB))
 			err := service.DeleteSubject(id)
 			resultMenu := NewResultMenu(
-				m.Db,
+				m.DB,
 				subjectResultOptions,
 				true,
 				"",
@@ -99,7 +99,7 @@ func (m *SubjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return resultMenu, resultMenu.Init()
 		case "ctrl+c":
-			subjectMenu := NewSubjectMenu(m.Db)
+			subjectMenu := NewSubjectMenu(m.DB)
 			return subjectMenu, subjectMenu.Init()
 		}
 	}
