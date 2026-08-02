@@ -3,7 +3,7 @@
 .PHONY: build clean update-deps run check changelog deb-package
 
 # dev
-build:
+build: update-deps
     CGO_ENABLED=0 go build -trimpath -o bin/chronosplit .
 
 clean:
