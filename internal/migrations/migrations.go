@@ -28,7 +28,7 @@ var (
 				subject_id INTEGER NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
 				previous_checkpoint_id INTEGER REFERENCES checkpoints(id),
 				start_time DATETIME NOT NULL,
-				end_time DATETIME,
+				end_time DATETIME NOT NULL,
 				description TEXT NOT NULL
 			);
 		`,

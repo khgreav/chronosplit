@@ -275,7 +275,8 @@ func (r *CheckpointRepo) GetLastCheckpoint(blockID int64) (*models.Checkpoint, e
 	err := r.db.QueryRow(`
 		SELECT id, block_id, project_id, subject_id, previous_checkpoint_id, start_time, end_time, description
 		FROM checkpoints
-		WHERE block_id = ? AND end_time IS NULL
+		WHERE block_id = ?
+		ORDER BY id DESC
 		LIMIT 1
 	`, blockID).Scan(
 		&c.ID,

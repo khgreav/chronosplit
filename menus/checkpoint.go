@@ -183,7 +183,7 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 
 				service := services.NewCheckpointService(repos.NewCheckpointRepo(m.DB))
-				now := time.Now()
+				now := time.Now().UTC()
 				var previousCheckpointID *int64
 
 				tx, err := m.DB.Begin()
@@ -205,7 +205,6 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// IF PREVIOUS CHECKPOINT EXISTS, END CONCLUDE IT
 				if lastCheckpoint != nil {
 					previousCheckpointID = &lastCheckpoint.ID
-					lastCheckpoint.EndTime = &now
 					err := service.UpdateCheckpoint(lastCheckpoint)
 					if err != nil {
 						resultMenu.Success = false
@@ -232,13 +231,13 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					ProjectID:            m.ProjectID,
 					SubjectID:            m.SubjectID,
 					PreviousCheckpointID: previousCheckpointID,
-					StartTime:            now,
+					StartTime:            m.Block.CreatedAt,
 					Description:          desc,
 				}
-				if m.StopBlock {
-					newCheckpoint.StartTime = *lastCheckpoint.EndTime
-					newCheckpoint.EndTime = &now
+				if lastCheckpoint != nil {
+					newCheckpoint.StartTime = lastCheckpoint.EndTime
 				}
+				newCheckpoint.EndTime = now
 				newCheckpoint, err = service.CreateCheckpoint(newCheckpoint)
 
 				if err != nil {

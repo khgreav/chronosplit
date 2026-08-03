@@ -11,6 +11,6 @@ type Checkpoint struct {
 	SubjectID            int64
 	PreviousCheckpointID *int64
 	StartTime            time.Time
-	EndTime              *time.Time
+	EndTime              time.Time
 	Description          string
 }
