@@ -1,6 +1,6 @@
 # Copyright (c) 2026 Karel Hanák
 # SPDX-License-Identifier: MIT
-.PHONY: build clean update-deps run check test coverage changelog deb-package
+.PHONY: build clean update-deps run check test coverage changelog changelog-dev changelog-rel commit-changelog-dev deb-package
 
 VERSION=dev
 BUILD_DATE=$(shell date -u +'%Y-%m-%d')
@@ -44,9 +44,16 @@ coverage:
 	go test -coverpkg=./... -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out -o coverage.html
 
-# packaging
-changelog:
+# git
+changelog-dev:
 	gbp dch -aS
 
+changelog-rel:
+	gbp dch -aR
+
+commit-changelog-dev: changelog-dev
+	git add debian/changelog && git ci -m "chore: updated changelog"
+
+# packaging
 deb-package: update-deps
 	debuild -us -uc -b -tc
