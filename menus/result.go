@@ -14,8 +14,8 @@ import (
 )
 
 var resultOptions = []common.MenuItem{
-	{ID: "back", Label: "Back to main menu"},
-	{ID: "exit", Label: "Exit"},
+	common.BackToMainItem,
+	common.ExitItem,
 }
 
 type ResultMenu struct {

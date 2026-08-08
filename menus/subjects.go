@@ -21,8 +21,8 @@ var subjectOptions = []common.MenuItem{
 	{ID: "list", Label: "List subjects"},
 	{ID: "create", Label: "Create subject"},
 	{ID: "delete", Label: "Delete subject"},
-	{ID: "back", Label: "Back to main menu"},
-	{ID: "exit", Label: "Exit"},
+	common.BackToMainItem,
+	common.ExitItem,
 }
 
 var subjectResultOptions = []common.MenuItem{

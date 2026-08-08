@@ -21,8 +21,8 @@ var projectOptions = []common.MenuItem{
 	{ID: "list", Label: "List projects"},
 	{ID: "create", Label: "Create project"},
 	{ID: "delete", Label: "Delete project"},
-	{ID: "back", Label: "Back to main menu"},
-	{ID: "exit", Label: "Exit"},
+	common.BackToMainItem,
+	common.ExitItem,
 }
 
 var projectResultOptions = []common.MenuItem{

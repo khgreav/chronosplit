@@ -23,7 +23,7 @@ var mainMenuOptions = []common.MenuItem{
 	{ID: "checkpoint", Label: "Create a checkpoint"},
 	{ID: "projects", Label: "Manage projects"},
 	{ID: "subjects", Label: "Manage subjects"},
-	{ID: "exit", Label: "Exit"},
+	common.ExitItem,
 }
 
 type MainMenu struct {
