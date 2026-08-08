@@ -1,6 +1,6 @@
-chronosplit (0.1.0~alpha~4.gbp7d997f) UNRELEASED; urgency=medium
+chronosplit (0.1.0~alpha~5.gbpbeb456) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @7d997fb9c0e1b899f5a6734dc58922684ca3a535 **
+  ** SNAPSHOT build @beb45648b927fe467403984808efd07648599ae7 **
 
   [Karel Hanák]
   * Initial commit
@@ -24,5 +24,14 @@ chronosplit (0.1.0~alpha~4.gbp7d997f) UNRELEASED; urgency=medium
   * menus: added extra newline after rendered text input
   * added repo testcases, test and coverage commands
   * checkpoints: fixed incorrect assignments of start and end times
+  * updated changelog
+  * added dummy quit menu to easily clear screen on exit
+  * menus: added universal handler for menu item selection
+  * added common package tests
+  * fixed package godocs, headers, and linter errors
+  * added generic shared methods for rendering menu header and options
+  * added basic reports feature
+  * use pre-defined shared menu options instead of redefining the same
+  * Makefile: updated changelog targets
 
- -- Karel Hanák <khgreav@gmail.com>  Mon, 03 Aug 2026 21:20:55 +0200
+ -- Karel Hanák <khgreav@gmail.com>  Sat, 08 Aug 2026 13:04:33 +0200
