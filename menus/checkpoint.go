@@ -130,14 +130,7 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				} else {
 					optLen = len(m.Subjects)
 				}
-				if optLen == 1 {
-					break
-				}
-				if m.Index == 0 {
-					m.Index = optLen - 1
-				} else {
-					m.Index--
-				}
+				m.Up(optLen)
 			}
 		case "down":
 			if m.CurrentState != DescriptionState {
@@ -147,14 +140,7 @@ func (m *CheckpointMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				} else {
 					optLen = len(m.Subjects)
 				}
-				if optLen == 1 {
-					break
-				}
-				if m.Index == optLen-1 {
-					m.Index = 0
-				} else {
-					m.Index++
-				}
+				m.Down(optLen)
 			}
 		case "enter":
 			switch m.CurrentState {

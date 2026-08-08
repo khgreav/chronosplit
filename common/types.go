@@ -42,3 +42,37 @@ func (m BaseMenu) GetCursor(i int) string {
 	}
 	return " "
 }
+
+func (m *BaseMenu) Up(itemCount ...int) {
+	var cnt int
+	if len(itemCount) == 0 {
+		cnt = len(m.Options)
+	} else {
+		cnt = itemCount[0]
+	}
+	if cnt == 1 {
+		return
+	}
+	if m.Index == 0 {
+		m.Index = cnt - 1
+	} else {
+		m.Index--
+	}
+}
+
+func (m *BaseMenu) Down(itemCount ...int) {
+	var cnt int
+	if len(itemCount) == 0 {
+		cnt = len(m.Options)
+	} else {
+		cnt = itemCount[0]
+	}
+	if cnt == 1 {
+		return
+	}
+	if m.Index == cnt-1 {
+		m.Index = 0
+	} else {
+		m.Index++
+	}
+}

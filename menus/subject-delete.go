@@ -70,23 +70,9 @@ func (m *SubjectDeleteMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "up":
-			if len(m.Subjects) == 1 {
-				break
-			}
-			if m.Index == 0 {
-				m.Index = len(m.Subjects) - 1
-			} else {
-				m.Index--
-			}
+			m.Up(len(m.Subjects))
 		case "down":
-			if len(m.Subjects) == 1 {
-				break
-			}
-			if m.Index == len(m.Subjects)-1 {
-				m.Index = 0
-			} else {
-				m.Index++
-			}
+			m.Down(len(m.Subjects))
 		case "enter":
 			id := m.Subjects[m.Index].ID
 			service := services.NewSubjectService(repos.NewSubjectRepo(m.DB))

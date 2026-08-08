@@ -81,17 +81,9 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "up":
-			if m.Index == 0 {
-				m.Index = len(m.Options) - 1
-			} else {
-				m.Index--
-			}
+			m.Up()
 		case "down":
-			if m.Index == len(m.Options)-1 {
-				m.Index = 0
-			} else {
-				m.Index++
-			}
+			m.Down()
 		case "enter":
 			switch m.Options[m.Index].ID {
 			case "list":
@@ -152,7 +144,7 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				mainMenu := NewMainMenu(m.DB)
 				return mainMenu, mainMenu.Init()
 			case "exit":
-				return m, tea.Quit
+				return NewQuitMenu(), tea.Quit
 			}
 		case "ctrl+c":
 			mainMenu := NewMainMenu(m.DB)
