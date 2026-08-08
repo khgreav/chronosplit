@@ -17,7 +17,7 @@ import (
 )
 
 var mainMenuOptions = []common.MenuItem{
-	{ID: "show", Label: "Show blocks"},
+	{ID: "report", Label: "Reports"},
 	{ID: "start", Label: "Start block"},
 	{ID: "stop", Label: "Stop block"},
 	{ID: "checkpoint", Label: "Create a checkpoint"},
@@ -81,6 +81,9 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.Down()
 		case "enter":
 			switch m.Options[m.Index].ID {
+			case "report":
+				reportMenu := NewReportMenu(m.DB)
+				return reportMenu, reportMenu.Init()
 			case "start":
 				service := services.NewBlockService(
 					repos.NewBlockRepo(m.DB),

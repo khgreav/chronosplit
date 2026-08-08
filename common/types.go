@@ -22,6 +22,11 @@ type MenuItem struct {
 	Label string
 }
 
+var (
+	BackToMainItem = MenuItem{ID: "back", Label: "Back to main menu"}
+	ExitItem       = MenuItem{ID: "exit", Label: "Exit"}
+)
+
 type MenuHint struct {
 	Key   string
 	Label string
