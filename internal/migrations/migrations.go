@@ -1,5 +1,7 @@
 // Copyright (c) 2026 Karel Hanák
 // SPDX-License-Identifier: MIT
+
+// Package migrations defines SQLite database migrations for the application.
 package migrations
 
 var (

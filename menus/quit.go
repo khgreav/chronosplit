@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Karel Hanák
 // SPDX-License-Identifier: MIT
+
 package menus
 
 import tea "charm.land/bubbletea/v2"

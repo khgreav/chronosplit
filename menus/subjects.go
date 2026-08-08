@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Karel Hanák
 // SPDX-License-Identifier: MIT
+
 package menus
 
 import (
@@ -112,7 +113,7 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					t.StyleFunc(func(row, col int) lipgloss.Style {
 						if row == table.HeaderRow {
-							return common.HeaderStyle
+							return common.TableHeaderStyle
 						}
 						return lipgloss.NewStyle()
 					})

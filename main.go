@@ -1,5 +1,7 @@
 // Copyright (c) 2026 Karel Hanák
 // SPDX-License-Identifier: MIT
+
+// Package main is the application entry point.
 package main
 
 import (

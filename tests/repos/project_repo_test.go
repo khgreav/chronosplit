@@ -16,7 +16,9 @@ func setupProjectDB(t *testing.T) *sql.DB {
 
 func TestProjectRepo_Create(t *testing.T) {
 	db := setupProjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewProjectRepo(db)
 	name := "Test Project"
@@ -37,7 +39,9 @@ func TestProjectRepo_Create(t *testing.T) {
 
 func TestProjectRepo_Get(t *testing.T) {
 	db := setupProjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewProjectRepo(db)
 	name := "Get Project"
@@ -62,7 +66,9 @@ func TestProjectRepo_Get(t *testing.T) {
 
 func TestProjectRepo_List(t *testing.T) {
 	db := setupProjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewProjectRepo(db)
 	names := []string{"P1", "P2", "P3"}
@@ -92,7 +98,9 @@ func TestProjectRepo_List(t *testing.T) {
 
 func TestProjectRepo_Delete(t *testing.T) {
 	db := setupProjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewProjectRepo(db)
 	created, err := repo.Create("Delete Me")

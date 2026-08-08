@@ -18,7 +18,9 @@ func setupSubjectDB(t *testing.T) *sql.DB {
 
 func TestSubjectRepo_Create(t *testing.T) {
 	db := setupSubjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewSubjectRepo(db)
 	name := "Test Subject"
@@ -39,7 +41,9 @@ func TestSubjectRepo_Create(t *testing.T) {
 
 func TestSubjectRepo_Get(t *testing.T) {
 	db := setupSubjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewSubjectRepo(db)
 	name := "Get Subject"
@@ -64,7 +68,9 @@ func TestSubjectRepo_Get(t *testing.T) {
 
 func TestSubjectRepo_List(t *testing.T) {
 	db := setupSubjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewSubjectRepo(db)
 	names := []string{"S1", "S2", "S3"}
@@ -94,7 +100,9 @@ func TestSubjectRepo_List(t *testing.T) {
 
 func TestSubjectRepo_Delete(t *testing.T) {
 	db := setupSubjectDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewSubjectRepo(db)
 	created, err := repo.Create("Delete Me")
