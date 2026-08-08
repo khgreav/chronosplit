@@ -24,7 +24,7 @@ type SubjectDeleteMenu struct {
 func NewSubjectDeleteMenu(db *sql.DB, subjects []models.Subject) *SubjectDeleteMenu {
 	return &SubjectDeleteMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Delete a subject\n\n",
+			Header:  "Delete a subject",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -41,7 +41,7 @@ func (m SubjectDeleteMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
-	sb.WriteString(m.Header)
+	sb.WriteString(m.RenderHeader())
 
 	for i, option := range m.Subjects {
 		cursor := m.GetCursor(i)

@@ -6,7 +6,7 @@ package common
 import "charm.land/lipgloss/v2"
 
 var (
-	HeaderStyle      = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#20e618"))
+	HeaderStyle      = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#f0de1f"))
 	TableHeaderStyle = lipgloss.NewStyle().Bold(true).Align(lipgloss.Center)
 	SelectedStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("#f0de1f"))
 	SuccessStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color("#20e618"))

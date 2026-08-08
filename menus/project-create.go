@@ -27,7 +27,7 @@ func NewProjectCreateMenu(db *sql.DB) *ProjectCreateMenu {
 	input.Focus()
 	return &ProjectCreateMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Create a project\n\n",
+			Header:  "Create a project",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -45,7 +45,7 @@ func (m *ProjectCreateMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
-	sb.WriteString(m.Header)
+	sb.WriteString(m.RenderHeader())
 
 	if m.Retry {
 		fmt.Fprintf(&sb, "%s\n", common.ErrorStyle.Render("Empty project name is not allowed\n"))

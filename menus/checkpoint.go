@@ -48,7 +48,7 @@ func NewCheckpointMenu(
 	input := textinput.New()
 	return &CheckpointMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Create a checkpoint\n\n",
+			Header:  "Create a checkpoint",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -73,7 +73,7 @@ func (m *CheckpointMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
-	sb.WriteString(m.Header)
+	sb.WriteString(m.RenderHeader())
 
 	switch m.CurrentState {
 	case ProjectState:

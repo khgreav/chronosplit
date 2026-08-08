@@ -24,7 +24,7 @@ type ProjectDeleteMenu struct {
 func NewProjectDeleteMenu(db *sql.DB, projects []models.Project) *ProjectDeleteMenu {
 	return &ProjectDeleteMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Delete a project\n\n",
+			Header:  "Delete a project",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -41,7 +41,7 @@ func (m ProjectDeleteMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
-	sb.WriteString(m.Header)
+	sb.WriteString(m.RenderHeader())
 
 	for i, option := range m.Projects {
 		cursor := m.GetCursor(i)

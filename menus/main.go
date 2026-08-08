@@ -58,17 +58,7 @@ func (m MainMenu) View() tea.View {
 	sb.WriteString(version.String())
 	sb.WriteString("\n\n")
 	sb.WriteString(m.Header)
-
-	for i, option := range m.Options {
-		cursor := m.GetCursor(i)
-		if m.Index == i {
-			line := fmt.Sprintf("%s %s", cursor, option.Label)
-			fmt.Fprintf(&sb, "%s\n", common.SelectedStyle.Render(line))
-		} else {
-			fmt.Fprintf(&sb, "%s %s\n", cursor, option.Label)
-		}
-	}
-
+	sb.WriteString(m.RenderOptions())
 	sb.WriteString(
 		common.RenderHints([]common.MenuHint{
 			common.ConfirmHint,

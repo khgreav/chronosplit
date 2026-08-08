@@ -36,7 +36,7 @@ type ProjectMenu struct {
 func NewProjectMenu(db *sql.DB) *ProjectMenu {
 	return &ProjectMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Manage projects\n\n",
+			Header:  "Manage projects",
 			Options: projectOptions,
 			Index:   0,
 			DB:      db,
@@ -52,18 +52,8 @@ func (m ProjectMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
-	sb.WriteString(m.Header)
-
-	for i, option := range m.Options {
-		cursor := m.GetCursor(i)
-		if m.Index == i {
-			line := fmt.Sprintf("%s %s", cursor, option.Label)
-			fmt.Fprintf(&sb, "%s\n", common.SelectedStyle.Render(line))
-		} else {
-			fmt.Fprintf(&sb, "%s %s\n", cursor, option.Label)
-		}
-	}
-
+	sb.WriteString(m.RenderHeader())
+	sb.WriteString(m.RenderOptions())
 	sb.WriteString(
 		common.RenderHints([]common.MenuHint{
 			common.ConfirmHint,

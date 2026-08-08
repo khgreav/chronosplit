@@ -27,7 +27,7 @@ func NewSubjectCreateMenu(db *sql.DB) *SubjectCreateMenu {
 	input.Focus()
 	return &SubjectCreateMenu{
 		BaseMenu: common.BaseMenu{
-			Header:  "Create a subject\n\n",
+			Header:  "Create a subject",
 			Options: []common.MenuItem{},
 			Index:   0,
 			DB:      db,
@@ -45,7 +45,7 @@ func (m SubjectCreateMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
-	sb.WriteString(m.Header)
+	sb.WriteString(m.RenderHeader())
 
 	if m.Retry {
 		fmt.Fprintf(&sb, "%s\n", common.ErrorStyle.Render("Empty subject name is not allowed\n"))

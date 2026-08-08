@@ -6,6 +6,7 @@ package common
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -35,6 +36,25 @@ type BaseMenu struct {
 	Options []MenuItem
 	Index   int
 	DB      *sql.DB
+}
+
+func (m BaseMenu) RenderHeader() string {
+	return fmt.Sprintf("%s\n\n", HeaderStyle.Render(m.Header))
+}
+
+func (m BaseMenu) RenderOptions() string {
+	var sb strings.Builder
+
+	for i, option := range m.Options {
+		cursor := m.GetCursor(i)
+		if m.Index == i {
+			line := fmt.Sprintf("%s %s", cursor, option.Label)
+			fmt.Fprintf(&sb, "%s\n", SelectedStyle.Render(line))
+		} else {
+			fmt.Fprintf(&sb, "%s %s\n", cursor, option.Label)
+		}
+	}
+	return sb.String()
 }
 
 func (m BaseMenu) GetCursor(i int) string {

@@ -45,8 +45,7 @@ func (m ResultMenu) View() tea.View {
 	var v tea.View
 
 	var sb strings.Builder
-	sb.WriteString(m.Header)
-	sb.WriteString("\n\n")
+	sb.WriteString(m.RenderHeader())
 	style := common.GetStyle(m.Success)
 	sb.WriteString(style.Render(m.Message))
 	sb.WriteString("\n\n")
