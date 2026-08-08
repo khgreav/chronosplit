@@ -204,10 +204,10 @@ func (m *MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				subjectMenu := NewSubjectMenu(m.DB)
 				return subjectMenu, subjectMenu.Init()
 			case "exit":
-				return m, tea.Quit
+				return NewQuitMenu(), tea.Quit
 			}
 		case "ctrl+q":
-			return m, tea.Quit
+			return NewQuitMenu(), tea.Quit
 		}
 	}
 	return m, nil

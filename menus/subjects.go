@@ -158,7 +158,7 @@ func (m *SubjectMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			mainMenu := NewMainMenu(m.DB)
 			return mainMenu, mainMenu.Init()
 		case "ctrl+q":
-			return m, tea.Quit
+			return NewQuitMenu(), tea.Quit
 		}
 	}
 	return m, nil
