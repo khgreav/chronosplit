@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Karel Hanák
 // SPDX-License-Identifier: MIT
-package tests
+
+package repos_test
 
 import (
 	"database/sql"
@@ -17,7 +18,9 @@ func setupBlockDB(t *testing.T) *sql.DB {
 
 func TestBlockRepo_StartBlock(t *testing.T) {
 	db := setupBlockDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewBlockRepo(db)
 
@@ -37,7 +40,9 @@ func TestBlockRepo_StartBlock(t *testing.T) {
 
 func TestBlockRepo_ActiveBlockExists(t *testing.T) {
 	db := setupBlockDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewBlockRepo(db)
 
@@ -65,7 +70,9 @@ func TestBlockRepo_ActiveBlockExists(t *testing.T) {
 
 func TestBlockRepo_GetActiveBlock(t *testing.T) {
 	db := setupBlockDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewBlockRepo(db)
 
@@ -91,7 +98,9 @@ func TestBlockRepo_GetActiveBlock(t *testing.T) {
 
 func TestBlockRepo_GetActiveBlockID(t *testing.T) {
 	db := setupBlockDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewBlockRepo(db)
 
@@ -117,7 +126,9 @@ func TestBlockRepo_GetActiveBlockID(t *testing.T) {
 
 func TestBlockRepo_StopBlock(t *testing.T) {
 	db := setupBlockDB(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	repo := repos.NewBlockRepo(db)
 

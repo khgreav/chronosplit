@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Karel Hanák
 // SPDX-License-Identifier: MIT
-package tests
+
+package repos_test
 
 import (
 	"database/sql"
